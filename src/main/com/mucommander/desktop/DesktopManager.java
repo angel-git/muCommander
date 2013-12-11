@@ -125,6 +125,8 @@ public class DesktopManager {
     private static DesktopAdapter                        desktop;
     /** Object used to create instances of {@link AbstractTrash}. */
     private static TrashProvider                         trashProvider;
+    /** The terminal adapter used to open the termianl **/
+    private static TerminalAdapter                       terminalAdapter;
 
 
 
@@ -469,6 +471,13 @@ public class DesktopManager {
      * @param provider object that will be used to create instances of {@link com.mucommander.desktop.AbstractTrash}.
      */
     public static void setTrashProvider(TrashProvider provider) {trashProvider = provider;}
+
+    // - Terminal adapter ------------------
+    public static TerminalAdapter getTerminalAdapter() {
+        return terminalAdapter;
+    }
+
+    public static void setTerminalAdapter(TerminalAdapter terminalAdapter) {  DesktopManager.terminalAdapter = terminalAdapter; }
 
 
     // - Mouse management ------------------------------------------------

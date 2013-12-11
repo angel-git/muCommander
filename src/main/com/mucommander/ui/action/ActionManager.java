@@ -145,6 +145,7 @@ public class ActionManager {
     	registerAction(new OpenInOtherPanelAction.Descriptor(),             new OpenInOtherPanelAction.Factory());
 //    	registerAction(new OpenLocationAction.Descriptor(),          	    new OpenLocationAction.Factory());
     	registerAction(new OpenNativelyAction.Descriptor(),       		    new OpenNativelyAction.Factory());
+    	registerAction(new OpenTerminalAction.Descriptor(),       		    new OpenTerminalAction.Factory());
     	registerAction(new OpenTrashAction.Descriptor(),           	        new OpenTrashAction.Factory());
     	registerAction(new OpenURLInBrowserAction.Descriptor(),             new OpenURLInBrowserAction.Factory());
     	registerAction(new PackAction.Descriptor(),       			        new PackAction.Factory());

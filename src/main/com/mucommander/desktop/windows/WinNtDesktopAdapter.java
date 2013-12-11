@@ -25,6 +25,7 @@ import com.mucommander.command.CommandType;
 import com.mucommander.commons.file.filter.RegexpFilenameFilter;
 import com.mucommander.commons.runtime.OsVersion;
 import com.mucommander.desktop.DesktopInitialisationException;
+import com.mucommander.desktop.DesktopManager;
 
 /**
  * @author Nicolas Rinaudo
@@ -42,6 +43,7 @@ public class WinNtDesktopAdapter extends WindowsDesktopAdapter {
     @Override
     public void init(boolean install) throws DesktopInitialisationException {
         super.init(install);
+        DesktopManager.setTerminalAdapter(new WinNtTerminalAdapter());
         try {
             CommandManager.registerDefaultCommand(new Command(CommandManager.FILE_OPENER_ALIAS,  FILE_OPENER_COMMAND, CommandType.SYSTEM_COMMAND, null));
             CommandManager.registerDefaultCommand(new Command(CommandManager.URL_OPENER_ALIAS,   FILE_OPENER_COMMAND, CommandType.SYSTEM_COMMAND, null));

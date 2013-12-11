@@ -5578,6 +5578,9 @@ OpenInBothPanels.label:TR:Her iki panelde aç
 OpenInBothPanels.label:CA:Obre a ambdós taulers
 # Translation missing (KO)
 
+OpenTerminal.label:EN:Open terminal
+OpenTerminal.tooltip:EN:Open terminal in current directory
+
 # This action is used to show a selected file in the system's default file manager, %1 is the name of the system's 
 # file manager (Finder, Explorer...)
 RevealInDesktop.label:EN:Reveal in %1
