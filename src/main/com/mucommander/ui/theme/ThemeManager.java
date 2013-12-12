@@ -74,6 +74,7 @@ public class ThemeManager {
         "ClassicCommander",
         "Native",
         "RetroCommander",
+        "Dark",
         "Striped"
     };
 
