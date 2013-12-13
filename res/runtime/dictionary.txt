@@ -11524,6 +11524,8 @@ progress_dialog.job_error:BE:Памылка апрацоўкі
 progress_dialog.job_error:NB:Feil ved utførelse
 progress_dialog.job_error:TR:İşlem hatası
 progress_dialog.job_error:CA:Error en tasca
+
+progress_dialog.background:EN:Background
 # Translation missing (KO)
 
 

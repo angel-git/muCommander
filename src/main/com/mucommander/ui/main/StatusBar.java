@@ -28,15 +28,10 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
+import com.mucommander.ui.dialog.file.ProgressDialog;
+import com.mucommander.ui.icon.IconManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,6 +124,9 @@ public class StatusBar extends JPanel implements Runnable, MouseListener, Active
     /** SizeFormat format used to create the selected file(s) size string */
     private static int selectedFileSizeFormat;
 
+    /** Background info **/
+    private JButton progressButton;
+    private ProgressDialog progressDialog;
 
     static {
         // Initialize the size column format based on the configuration
@@ -225,6 +223,9 @@ public class StatusBar extends JPanel implements Runnable, MouseListener, Active
         volumeSpaceLabel.setFont(ThemeManager.getCurrentFont(Theme.STATUS_BAR_FONT));
         volumeSpaceLabel.setForeground(ThemeManager.getCurrentColor(Theme.STATUS_BAR_FOREGROUND_COLOR));
         ThemeManager.addCurrentThemeListener(this);
+
+        progressButton = new JButton(IconManager.getIcon(IconManager.PROGRESS_ICON_SET, "background.gif"));
+        progressButton.addMouseListener(this);
     }
 
 
@@ -511,17 +512,21 @@ public class StatusBar extends JPanel implements Runnable, MouseListener, Active
     //////////////////////////////////
 	
     public void mouseClicked(MouseEvent e) {
-        // Discard mouse events while in 'no events mode'
-        if(mainFrame.getNoEventsMode())
-            return;
+        if (e.getSource()==progressButton) {
+            showProgressDialog();
+        } else {
+            // Discard mouse events while in 'no events mode'
+            if(mainFrame.getNoEventsMode())
+                return;
 
-        // Right clicking on the toolbar brings up a popup menu that allows the user to hide this status bar
-        if (DesktopManager.isRightMouseButton(e)) {
-            //		if (e.isPopupTrigger()) {	// Doesn't work under Mac OS X (CTRL+click doesn't return true)
-            JPopupMenu popupMenu = new JPopupMenu();
-            popupMenu.add(ActionManager.getActionInstance(com.mucommander.ui.action.impl.ToggleStatusBarAction.Descriptor.ACTION_ID, mainFrame));
-            popupMenu.show(this, e.getX(), e.getY());
-            popupMenu.setVisible(true);
+            // Right clicking on the toolbar brings up a popup menu that allows the user to hide this status bar
+            if (DesktopManager.isRightMouseButton(e)) {
+                //		if (e.isPopupTrigger()) {	// Doesn't work under Mac OS X (CTRL+click doesn't return true)
+                JPopupMenu popupMenu = new JPopupMenu();
+                popupMenu.add(ActionManager.getActionInstance(com.mucommander.ui.action.impl.ToggleStatusBarAction.Descriptor.ACTION_ID, mainFrame));
+                popupMenu.show(this, e.getX(), e.getY());
+                popupMenu.setVisible(true);
+            }
         }
     }
 
@@ -572,6 +577,30 @@ public class StatusBar extends JPanel implements Runnable, MouseListener, Active
             volumeSpaceLabel.setForeground(event.getColor());
             repaint();
         }
+    }
+
+    public void removeProgressButton() {
+        remove(progressButton);
+        repaint();
+    }
+
+    /**
+     * shows a progress icon that holds the ProgressDialog minimized
+     */
+    public void showProgressIcon(ProgressDialog progressDialog) {
+        this.progressDialog = progressDialog;
+        this.progressDialog.setVisible(false);
+        progressButton.setText(progressDialog.getTitle());
+        add(progressButton, 0);
+        repaint();
+    }
+
+    /**
+     * Shows the progress dialog
+     */
+    public void showProgressDialog() {
+        this.progressDialog.setVisible(true);
+        this.removeProgressButton();
     }
 
 

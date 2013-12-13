@@ -96,6 +96,7 @@ public class ProgressDialog extends FocusDialog implements ActionListener, ItemL
     private JButton pauseResumeButton;
     private JButton skipButton;
     private JButton stopButton;
+    private JButton backgroundButton;
     private JCheckBox closeWhenFinishedCheckBox;
 //    private JButton hideButton;
 
@@ -109,11 +110,12 @@ public class ProgressDialog extends FocusDialog implements ActionListener, ItemL
     private final static String PAUSE_ICON = "pause.png";
     private final static String SKIP_ICON = "skip.png";
     private final static String STOP_ICON = "stop.png";
+    private final static String BACKGROUND_ICON = "background.gif";
     private final static String CURRENT_SPEED_ICON = "speed.png";
 
     // Dialog width is constrained to 320, height is not an issue (always the same)
-    private final static Dimension MAXIMUM_DIALOG_DIMENSION = new Dimension(320,10000);
-    private final static Dimension MINIMUM_DIALOG_DIMENSION = new Dimension(320,0);
+    private final static Dimension MAXIMUM_DIALOG_DIMENSION = new Dimension(480,10000);
+    private final static Dimension MINIMUM_DIALOG_DIMENSION = new Dimension(480,0);
 
     /** Height allocated to the 'speed graph' */
     private final static int SPEED_GRAPH_HEIGHT = 80;
@@ -229,19 +231,22 @@ public class ProgressDialog extends FocusDialog implements ActionListener, ItemL
         stopButton = new JButton(Translator.get("stop"), IconManager.getIcon(IconManager.PROGRESS_ICON_SET, STOP_ICON));
         stopButton.addActionListener(this);
 
+        backgroundButton = new JButton(Translator.get("progress_dialog.background"), IconManager.getIcon(IconManager.PROGRESS_ICON_SET, BACKGROUND_ICON));
+        backgroundButton.addActionListener(this);
+
 //        hideButton = new JButton(Translator.get("progress_dialog.hide"));
 //        hideButton.addActionListener(this);
 
         this.buttonsChoicePanel = new ButtonChoicePanel(
-                skipButton==null?new JButton[] {pauseResumeButton, stopButton}:new JButton[] {pauseResumeButton, skipButton, stopButton},
+                skipButton==null?new JButton[] {pauseResumeButton, stopButton, backgroundButton}:new JButton[] {pauseResumeButton, skipButton, stopButton, backgroundButton},
                 0, getRootPane());
         contentPane.add(buttonsChoicePanel, BorderLayout.SOUTH);
 
-        // Cancel button receives initial focus
-        setInitialFocusComponent(stopButton);
+        // background button receives initial focus
+        setInitialFocusComponent(backgroundButton);
 
-        // Enter triggers cancel button
-        getRootPane().setDefaultButton(stopButton);
+        // Enter triggers background button
+        getRootPane().setDefaultButton(backgroundButton);
     }
 
 
@@ -304,6 +309,8 @@ public class ProgressDialog extends FocusDialog implements ActionListener, ItemL
             //  Dispose dialog only if 'Close when finished option' is selected
             if(closeWhenFinishedCheckBox.isSelected()) {
                 // Stop repaint thread and dispose dialog
+                StatusBar statusBar = ((MainFrame) getOwner()).getStatusBar();
+                statusBar.removeProgressButton();
                 stop();
                 dispose();
             // If not, disable components to indicate that the job is finished and leave the dialog open
@@ -428,12 +435,20 @@ public class ProgressDialog extends FocusDialog implements ActionListener, ItemL
         else if(source==pauseResumeButton) {
             // Pause/resume job
             job.setPaused(job.getState()!=FileJob.PAUSED);
+        } else if (source==backgroundButton) {
+            minimizeDialog();
         }
 //        else if(source==hideButton) {
 //            mainFrame.setState(Frame.ICONIFIED);
 //        }
     }
 
+    private void minimizeDialog() {
+        if (getOwner() instanceof MainFrame){
+            StatusBar statusBar = ((MainFrame) getOwner()).getStatusBar();
+            statusBar.showProgressIcon(this);
+        }
+    }
 
     /////////////////////////////////
     // ItemListener implementation //
@@ -491,7 +506,7 @@ public class ProgressDialog extends FocusDialog implements ActionListener, ItemL
         	MuConfigurations.getPreferences().setVariable(MuPreference.PROGRESS_DIALOG_EXPANDED, collapseExpandButton.getExpandedState());
 
         // Remember 'close window when finished' option state
-        MuConfigurations.getPreferences().setVariable(MuPreference.PROGRESS_DIALOG_CLOSE_WHEN_FINISHED, closeWhenFinishedCheckBox.isSelected());        
+        MuConfigurations.getPreferences().setVariable(MuPreference.PROGRESS_DIALOG_CLOSE_WHEN_FINISHED, closeWhenFinishedCheckBox.isSelected());
     }
 
 
